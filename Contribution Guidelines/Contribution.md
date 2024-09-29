@@ -4,9 +4,9 @@ API Endpoint Documentation Contribution Guidelines
 This documentation provides guidelines for integrating the API endpoints with React for your frontend development. The API is designed to manage project information, including creation, updating, deleting, and retrieving projects. The authentication endpoints for user registration and login are also covered.
 
 ## 1. Authentication Endpoints
-  User Registration (/register/)
-  User Login (/login/)
-  User Logout (/UserLogoutView/)
+   - [User Registration](#user-registration)
+   - [User Login](#user-login)
+   - [User Logout](#user-logout)
 ## 2. Project Information Endpoints
   Create Project (/projects/project_create/)
   List Projects (/projects/)
