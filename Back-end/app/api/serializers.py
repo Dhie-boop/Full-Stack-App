@@ -11,9 +11,12 @@ class ProjectInformationSerializer(serializers.ModelSerializer):
         fields = '__all__'  # This brings all the fields that belong to ProjectInformation model
         
 class ProjectDetailsSerializer(serializers.ModelSerializer):
+    # Access project_title from the related ProjectInformation model
+    project_title = serializers.CharField(source='project.project_title', read_only=True)
+    
     class Meta:
         model = ProjectDetails
-        fields = '__all__'  # This brings all the fields that belong to ProjectDetails model
+        fields = ['project_title', 'author', 'school_category', 'status', 'github_link', 'description', 'image_sample', 'benefit']  # This brings all the fields that belong to ProjectDetails model
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
     class Meta:

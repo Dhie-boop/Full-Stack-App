@@ -85,11 +85,11 @@ def detailsproject(request, project_id):
 
     # Loop through each project detail and fetch associated comments
     for detail in project_details:
-        comments = detail.comments.all()  
+        comments = detail.comments.all()  # Assuming you have a related comments field
 
         # Serialize the detail and the comments
         detail_serializer = ProjectDetailsSerializer(detail)
-        comments_serializer = CommentSerializer(comments, many=True)
+        comments_serializer = ProjectCommentSerializer(comments, many=True)
 
         # Append the serialized data to the list
         project_details_with_comments.append({
@@ -97,14 +97,15 @@ def detailsproject(request, project_id):
             'comments': comments_serializer.data
         })
 
-    # Serialize the main project
-    project_serializer = ProjectSerializer(project)
+    # Serialize the main project using ProjectInformationSerializer
+    project_serializer = ProjectInformationSerializer(project)
 
     # Return the project, its details, and related comments as JSON
     return Response({
         'project': project_serializer.data,
         'project_details_with_comments': project_details_with_comments
     }, status=status.HTTP_200_OK)
+
     
     
 # This is a API view function of like 
@@ -162,19 +163,40 @@ def project_search(request):
 def project_update(request, project_id):
     # First, get the related ProjectDetails object for the current user and project
     project_detail = get_object_or_404(ProjectDetails, project_id=project_id, author=request.user)
-    
+
     # Now get the corresponding ProjectInformation object
     project = project_detail.project
-    
+
+    # Check if the request method is PUT (update)
     if request.method == 'PUT':
-        # Create a serializer instance with the existing project data and update it with request data
-        serializer = ProjectInformationSerializer(project, data=request.data)
-        
-        if serializer.is_valid():
-            serializer.save()  
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Extract project data and project details data from the request
+        project_data = request.data.get('projects', None)
+        project_details_data = request.data.get('project_details', None)
+
+        # Update ProjectInformation (Main project)
+        if project_data:
+            project_serializer = ProjectInformationSerializer(project, data=project_data[0])
+            if project_serializer.is_valid():
+                project_serializer.save()
+            else:
+                return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Update ProjectDetails (Details of the project)
+        if project_details_data:
+            project_detail_serializer = ProjectDetailsSerializer(project_detail, data=project_details_data[0])
+            if project_detail_serializer.is_valid():
+                project_detail_serializer.save()
+            else:
+                return Response(project_detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # Return both updated project and project details
+        return Response({
+            'project': project_serializer.data,
+            'project_details': project_detail_serializer.data
+        }, status=status.HTTP_200_OK)
+
+    return Response({"error": "Invalid request method"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
     
     
 # This is a API view function to delete a project
