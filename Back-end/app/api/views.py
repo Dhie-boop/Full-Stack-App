@@ -160,43 +160,34 @@ def project_search(request):
 
 # This is a API view function to update a project
 @api_view(['PUT'])
-def project_update(request, project_id):
-    # First, get the related ProjectDetails object for the current user and project
-    project_detail = get_object_or_404(ProjectDetails, project_id=project_id, author=request.user)
+def project_update(request, project_id): 
+    try:
+        project = ProjectInformation.objects.get(pk=project_id) 
+    except ProjectInformation.DoesNotExist:
+        return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-    # Now get the corresponding ProjectInformation object
-    project = project_detail.project
 
-    # Check if the request method is PUT (update)
+    project_serializer = None  # Initialize project_serializer
+
     if request.method == 'PUT':
-        # Extract project data and project details data from the request
-        project_data = request.data.get('projects', None)
-        project_details_data = request.data.get('project_details', None)
+        project_serializer = ProjectInformationSerializer(project, data=request.data)
 
-        # Update ProjectInformation (Main project)
-        if project_data:
-            project_serializer = ProjectInformationSerializer(project, data=project_data[0])
-            if project_serializer.is_valid():
-                project_serializer.save()
-            else:
-                return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        if project_serializer.is_valid():
+            project_serializer.save()
+            return Response({
+                'message': 'Project updated successfully',
+                'project': project_serializer.data,
+            }, status=status.HTTP_200_OK)
+        
+        # If the data is invalid, return errors
+        return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # Update ProjectDetails (Details of the project)
-        if project_details_data:
-            project_detail_serializer = ProjectDetailsSerializer(project_detail, data=project_details_data[0])
-            if project_detail_serializer.is_valid():
-                project_detail_serializer.save()
-            else:
-                return Response(project_detail_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response({'error': 'Invalid request method.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-        # Return both updated project and project details
-        return Response({
-            'project': project_serializer.data,
-            'project_details': project_detail_serializer.data
-        }, status=status.HTTP_200_OK)
 
-    return Response({"error": "Invalid request method"}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+    
+    
     
     
 # This is a API view function to delete a project
@@ -221,30 +212,38 @@ def project_delete(request, project_id):
 
 # This is a API view function to create a project details
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])  # Ensure user is authenticated
 def project_details_create(request):
-    if request.method == 'POST':
-        serializer = ProjectDetailsSerializer(data=request.data)  
-        
-        if serializer.is_valid():
-            serializer.save(author=request.user)  
-            return Response({'message': 'Project details created successfully'}, status=status.HTTP_201_CREATED)
-        
-        # Return validation errors if invalid
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    serializer = ProjectDetailsSerializer(data=request.data)
+    
+    if serializer.is_valid():
+        # Save the instance with the authenticated user as the author
+        serializer.save(author=request.user)
+        return Response({'message': 'Project details created successfully'}, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # This is a API view function to update a project details
 @api_view(['PUT'])
 def project_details_update(request, project_id):
-    project_detail = get_object_or_404(ProjectDetails, id=project_id, author=request.user)
-    serializer = ProjectDetailsSerializer(instance=project_detail, data=request.data)  
+    try:
+        # Ensure you get the project detail with the correct project_id and author (user)
+        project_detail = get_object_or_404(ProjectDetails, id=project_id, author=request.user)
+    except ProjectDetails.DoesNotExist:
+        return Response({'error': 'Project details not found.'}, status=status.HTTP_404_NOT_FOUND)
 
+    # Initialize serializer with the request data for the specified instance
+    serializer = ProjectDetailsSerializer(instance=project_detail, data=request.data)
+
+    # Check if the data is valid before saving
     if serializer.is_valid():
-        serializer.save() 
+        serializer.save()
         return Response({'message': 'Project details updated successfully'}, status=status.HTTP_200_OK)
-
-    # Return validation errors if invalid
+    
+    # If validation fails, return the errors
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -282,6 +281,63 @@ def user_project_details(request, project_id):
         'project_details': project_details_serializer.data
     }
     return Response(data, status=status.HTTP_200_OK) 
+
+
+
+
+
+@api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
+def project_comments(request, project_id):
+    # Try to retrieve the project using the project_id from the URL
+    project = get_object_or_404(ProjectDetails, id=project_id)
+
+    if request.method == 'POST':
+        # Do not expect 'project_detail' in the request data, set it automatically
+        data = request.data.copy()  # Copy the request data
+        data['project_detail'] = project.id  # Set the 'project_detail' to the project ID
+        
+        # Create a comment with the modified data
+        serializer = ProjectCommentSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(user=request.user)  # Assign the authenticated user
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'GET':
+        # Get all comments for this project
+        comments = ProjectComment.objects.filter(project_detail=project)
+        serializer = ProjectCommentSerializer(comments, many=True)
+        return Response(serializer.data)
+
+
+@api_view(['PUT', 'DELETE'])
+@permission_classes([IsAuthenticated])
+def modify_comment(request, comment_id):
+    # Retrieve the specific comment
+    comment = get_object_or_404(ProjectComment, id=comment_id)
+
+    # Check if the comment belongs to the authenticated user
+    if comment.user != request.user:
+        return Response({'error': 'You are not authorized to modify this comment.'}, status=status.HTTP_403_FORBIDDEN)
+
+    # Update an existing comment
+    if request.method == 'PUT':
+        serializer = ProjectCommentSerializer(comment, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # Delete the comment
+    elif request.method == 'DELETE':
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
 
 
 

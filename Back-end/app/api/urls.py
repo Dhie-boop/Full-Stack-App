@@ -33,7 +33,7 @@ urlpatterns = [
     path('project_details/<int:project_id>/project_details_update', views.project_details_update, name='project_details_update'),
     
     #This endpoint API will delete a project details
-    path('user_projects/<int:user_id>', views.user_projects, name='user_projects'),	
+    #path('user_projects/', views.user_projects, name='user_projects'),	
     
     
     # This Endpoint to get all projects of the logged-in user
@@ -41,6 +41,19 @@ urlpatterns = [
 
     # This Endpoint to get the details of a specific project
     path('user-projects/<int:project_id>/', views.user_project_details, name='user_project_details'),
+    
+    
+    
+    
+    # This Endpoint is for listing comments and creating a new comment for a project
+    path('projects/<int:project_id>/comments/', views.project_comments, name='project_comments'),
+    
+    # This Endpoint is for updating and deleting a specific comment
+    path('comments/<int:comment_id>/', views.modify_comment, name='modify_comment'),
+    
+    
+    
+    
     
     
     #This endpoint API will create a new user account

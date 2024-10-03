@@ -30,7 +30,7 @@ class ProjectDetails(models.Model):
     status = models.CharField(max_length=50)
     github_link = models.URLField(blank=True)
     description = models.TextField()
-    image_sample = models.ImageField(upload_to='project_images/', blank=True, default='default.png')
+    image_sample = models.ImageField(upload_to='project_images/', blank=True, null=True, default='default.png')
     benefit = models.TextField()
 
     def __str__(self):

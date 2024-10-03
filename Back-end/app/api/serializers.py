@@ -11,17 +11,20 @@ class ProjectInformationSerializer(serializers.ModelSerializer):
         fields = '__all__'  # This brings all the fields that belong to ProjectInformation model
         
 class ProjectDetailsSerializer(serializers.ModelSerializer):
-    # Access project_title from the related ProjectInformation model
-    project_title = serializers.CharField(source='project.project_title', read_only=True)
-    
     class Meta:
         model = ProjectDetails
-        fields = ['project_title', 'author', 'school_category', 'status', 'github_link', 'description', 'image_sample', 'benefit']  # This brings all the fields that belong to ProjectDetails model
+        fields = ['project', 'school_category', 'status', 'github_link', 'description', 'image_sample', 'benefit']
+        # Exclude author since we handle it in the view
+
+    def create(self, validated_data):
+        # Automatically assign the author in the view function, no need to pass it here
+        return ProjectDetails.objects.create(**validated_data)  # This brings all the fields that belong to ProjectDetails model
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectComment
-        fields = '__all__'  # This brings all the fields that belong to ProjectComment model
+        fields = ['id', 'project_detail', 'user', 'comment_text', 'created_at']
+        read_only_fields = ['id', 'created_at', 'user']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
