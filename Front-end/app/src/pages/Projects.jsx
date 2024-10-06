@@ -1,9 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Projects = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [category, setCategory] = useState('');
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // Add logic to handle the search based on searchTerm and category
+    console.log("Searching for:", searchTerm, "in category:", category);
+  };
+
   return (
     <div className="container mt-5">
-      <h2 className="text-center">Published Projects</h2>
+      <h2 className="text-center mb-5">Published Projects</h2>
+
+      {/* Search Bar */}
+      <form className="flex justify-center mb-8" onSubmit={handleSearch}>
+        <div className="flex space-x-4">
+          <select
+            className="p-2 border border-gray-300 rounded-md"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="">Select Category</option>
+            <option value="web">Web Development</option>
+            <option value="mobile">Mobile Development</option>
+            <option value="data">Data Science</option>
+            <option value="design">UI/UX Design</option>
+          </select>
+
+          <input
+            type="text"
+            className="p-2 border border-gray-300 rounded-md"
+            placeholder="Search projects"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+          >
+            Search
+          </button>
+        </div>
+      </form>
+
+      {/* Project Cards */}
       <div className="row">
         {/* Example project cards */}
         <div className="col-md-4">
