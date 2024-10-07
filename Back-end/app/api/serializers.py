@@ -1,6 +1,7 @@
 # serializers.py
 from rest_framework import serializers
 from .models import ProjectInformation, ProjectDetails, ProjectComment, Like
+from django.contrib.auth.hashers import make_password
 
 from django.contrib.auth.models import User
 from rest_framework import serializers

@@ -9,6 +9,7 @@ from rest_framework import status
 from .models import ProjectInformation, ProjectDetails, ProjectComment, Like, User
 from .serializers import ProjectInformationSerializer, ProjectDetailsSerializer, ProjectCommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated
+from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
@@ -343,7 +344,7 @@ def modify_comment(request, comment_id):
 
 
 
-
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
