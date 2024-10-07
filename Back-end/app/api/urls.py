@@ -1,8 +1,8 @@
 from django.urls import path
 from .views import project_list, like_project, detailsproject
 from .import views
-
-from .views import UserRegisterView, UserLoginView, UserLogoutView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from .views import *
 
 urlpatterns = [
     #This is to display or render the entire list of the project created
@@ -55,12 +55,11 @@ urlpatterns = [
     
     
     
+
     
-    #This endpoint API will create a new user account
-    path('register/', UserRegisterView.as_view(), name='user-register'),
     
-    #This endpoint API will login a user
-    path('login/', UserLoginView.as_view(), name='user-login'),
-    
-    path('UserLogoutView/', UserLogoutView.as_view(), name='UserLogoutView'),
+    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # Other views
+    path('register/', views.register, name='register'),
 ]

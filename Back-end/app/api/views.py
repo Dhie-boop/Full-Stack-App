@@ -14,7 +14,8 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .serializers import UserRegisterSerializer, UserLoginSerializer
+from .serializers import UserSerializer
+from django.contrib.auth.hashers import make_password
 
 
 
@@ -343,38 +344,15 @@ def modify_comment(request, comment_id):
 
 
 
-class UserRegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserRegisterSerializer
-    permission_classes = [AllowAny]
-    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    print("Request received")  # Add this to ensure the request is reaching the view
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     
 
-class UserLoginView(generics.GenericAPIView):
-    serializer_class = UserLoginSerializer
-    permission_classes = [AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = authenticate(username=serializer.validated_data['username'],
-                            password=serializer.validated_data['password'])
-        if user:
-            token, _ = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key})
-        return Response({'error': 'Invalid Credentials'}, status=400)
-    
-    
-    
-
-@permission_classes([IsAuthenticated])
-class UserLogoutView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request):
-        try:
-            token = request.auth  # Get the token from the request
-            token.delete()  # Delete the token
-            return Response({"message": "Successfully logged out."}, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

@@ -41,25 +41,16 @@ class LikeSerializer(serializers.ModelSerializer):
 # This is the UserRegisterSerializer and UserLoginSerializer
 
 
-class UserRegisterSerializer(serializers.ModelSerializer):
-    confirm_password = serializers.CharField(write_only=True)
+class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'confirm_password', 'email')
+        fields = ['username', 'password']
 
     def create(self, validated_data):
-        validated_data.pop('confirm_password')  
-        user = User(**validated_data)
-        user.set_password(validated_data['password'])  # Hash the password
-        user.save()
+        user = User.objects.create(
+            username=validated_data['username'],
+            password=make_password(validated_data['password']),
+        )
         return user
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"password": "Passwords do not match."})
-        return attrs
-
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField()
