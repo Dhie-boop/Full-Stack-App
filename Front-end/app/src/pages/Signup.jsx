@@ -21,7 +21,7 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://127.0.0.1:8000/register/', formData); // Adjust the URL if needed
+      await axios.post('http://127.0.0.1:8000/api/register/', formData); // Adjust the URL if needed
       navigate('/login');  // Redirect to login page
     } catch (err) {
       setError('An error occurred during registration');
