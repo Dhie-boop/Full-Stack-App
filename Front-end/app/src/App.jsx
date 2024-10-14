@@ -11,7 +11,7 @@ import Dashboard from './pages/Dashboard';
 function App() {
   return (
     <Router>
-      <div className='bg-gray-100 w-full h-full'>
+      <div className='bg-gray-300 w-full h-full'>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
