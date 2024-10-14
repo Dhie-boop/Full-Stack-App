@@ -8,7 +8,7 @@ const Navbar = () => {
 
   return (
     <nav className="">
-      <div className="py-3 px-5 flex justify-between items-center border shadow-sm">
+      <div className="py-4 px-5 flex justify-between items-center border shadow-sm">
         <Link className="text-3xl font-bold no-underline text-blue-500" to="/">
           ProjectM
         </Link>
@@ -17,9 +17,9 @@ const Navbar = () => {
           <ul className="flex justify-between items-center gap-5 no-underline">
             <li className="">
               <Link
-                className={`no-underline ${
-                  isActive("/") ? "bg-blue-500 text-white" : "text-blue-500"
-                } px-3 py-2 rounded`}
+                className={`${
+                  isActive("/") ? "bg-blue-500 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/"
               >
                 Home
@@ -27,9 +27,9 @@ const Navbar = () => {
             </li>
             <li className="">
               <Link
-                className={`no-underline ${
-                  isActive("/about") ? "bg-blue-500 text-white" : "text-blue-500"
-                } px-3 py-2 rounded`}
+                className={`${
+                  isActive("/about") ? "bg-blue-500 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/about"
               >
                 About
@@ -37,9 +37,9 @@ const Navbar = () => {
             </li>
             <li className="">
               <Link
-                className={`no-underline ${
-                  isActive("/projects") ? "bg-blue-500 text-white" : "text-blue-500"
-                } px-3 py-2 rounded`}
+                className={`${
+                  isActive("/projects") ? "bg-blue-500 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/projects"
               >
                 Projects
@@ -48,8 +48,8 @@ const Navbar = () => {
             <li className="">
               <Link
                 className={`no-underline ${
-                  isActive("/login") ? "bg-blue-500 text-white" : "text-blue-500"
-                } px-3 py-2 rounded`}
+                  isActive("/login") ? "bg-blue-500 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/login"
               >
                 Login
@@ -58,8 +58,8 @@ const Navbar = () => {
             <li className="">
               <Link
                 className={`no-underline ${
-                  isActive("/signup") ? "bg-blue-500 text-white" : "text-blue-500"
-                } px-3 py-2 rounded`}
+                  isActive("/signup") ? "bg-blue-500 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/signup"
               >
                 Sign Up
