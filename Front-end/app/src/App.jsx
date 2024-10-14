@@ -11,14 +11,14 @@ import Dashboard from './pages/Dashboard';
 function App() {
   return (
     <Router>
-      <div>
+      <div className='bg-gray-100 w-full h-full'>
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/projects" element={<Projects />} /> {/* New Route */}
+          <Route path="/projects" element={<Projects />} />
           <Route exact path="/dashboard" component={Dashboard} />
         </Routes>
       </div>
