@@ -4,6 +4,7 @@ from .import views
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import *
 
+from rest_framework.authtoken.views import ObtainAuthToken
 urlpatterns = [
     #This is to display or render the entire list of the project created
     path('projects/', project_list, name='project_list'),
@@ -59,7 +60,9 @@ urlpatterns = [
     
     
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
     # Other views
     path('register/', views.register, name='register'),
+    path('logout/', LogoutView.as_view(), name='logout'),
+    path('home/', views.HomeView.as_view(), name ='home')
 ]

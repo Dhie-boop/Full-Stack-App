@@ -1,37 +1,26 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Navbar.css'; // Optional for custom styles
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
 
-const Navbar = () => {
-  return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">MyApp</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/">Home</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/about">About</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/projects">Projects</Link> {/* New Link */}
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/signup">Sign Up</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
-export default Navbar;
+import React, { useState, useEffect} from 'react';
+export function Navigation() {
+   const [isAuth, setIsAuth] = useState(false);
+   useEffect(() => {
+     if (localStorage.getItem('access_token') !== null) {
+        setIsAuth(true); 
+      }
+    }, [isAuth]);
+     return ( 
+      <div>
+        <Navbar bg="dark" variant="dark">
+          <Navbar.Brand href="/">JWT Authentification</Navbar.Brand>            
+          <Nav className="me-auto"> 
+          {isAuth ? <Nav.Link href="/">Home</Nav.Link> : null}
+          </Nav>
+          <Nav>
+          {isAuth ? <Nav.Link href="/logout">Logout</Nav.Link> :  
+                    <Nav.Link href="/login">Login</Nav.Link>}
+          </Nav>
+        </Navbar>
+       </div>
+     );
+}
