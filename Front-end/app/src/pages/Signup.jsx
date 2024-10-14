@@ -76,7 +76,10 @@ const Signup = () => {
           </p>
         </div>
 
-        <form class="mx-auto mb-0 mt-8 max-w-md space-y-4" action="#">
+        <form
+          class="mx-auto mb-0 mt-8 max-w-md space-y-4"
+          onSubmit={handleSubmit}
+        >
           <div>
             <label class="sr-only" for="username">
               Username
@@ -172,7 +175,7 @@ const Signup = () => {
           <div class="flex items-center justify-between">
             <div className="flex flex-col">
               <p class="text-gray-600">Already have an account?</p>
-              <Link href="#" class="underline">
+              <Link to="/login" class="underline">
                 Sign-In Here
               </Link>
             </div>
@@ -180,7 +183,7 @@ const Signup = () => {
               class="inline-block rounded-lg bg-gray-700 px-5 py-3 text-sm font-medium text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               type="submit"
             >
-              Sign In
+              Sign Up
             </button>
           </div>
         </form>
