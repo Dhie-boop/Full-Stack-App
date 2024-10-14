@@ -8,7 +8,6 @@ const Home = () => {
       <span className="text-[28px]">
         Track Your Projects and Share the Journey
       </span>
-      <p className="text-[18px]"></p>
       <article class="w-[80%] flex flex-col justify-center items-center bg-gray-700 shadow p-4 space-y-2 rounded-md hover:-translate-y-2 duration-300">
         <svg
           viewBox="0 0 24 24"

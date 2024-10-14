@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Projects = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [category, setCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -39,7 +40,7 @@ const Projects = () => {
 
           <button
             type="submit"
-            className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700"
+            className="bg-gray-700 text-white p-2 rounded-md hover:bg-gray-800"
           >
             Search
           </button>
@@ -51,37 +52,63 @@ const Projects = () => {
         {/* Example project cards */}
         <div className="col-md-4">
           <div className="card mb-4 shadow-sm">
-            <img src="https://via.placeholder.com/150" className="card-img-top" alt="Project 1" />
+            <img
+              src="https://via.placeholder.com/150"
+              className="card-img-top"
+              alt="Project 1"
+            />
             <div className="card-body">
               <h5 className="card-title">Project 1</h5>
-              <p className="card-text">Short description of Project 1. You can provide a brief summary here.</p>
-              <a href="#" className="btn btn-primary">View Project</a>
+              <p className="card-text">Short description of Project 1.</p>
+              <Link
+                href="#"
+                className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800 "
+              >
+                View Project
+              </Link>
             </div>
           </div>
         </div>
 
         <div className="col-md-4">
           <div className="card mb-4 shadow-sm">
-            <img src="https://via.placeholder.com/150" className="card-img-top" alt="Project 2" />
+            <img
+              src="https://via.placeholder.com/150"
+              className="card-img-top"
+              alt="Project 2"
+            />
             <div className="card-body">
               <h5 className="card-title">Project 2</h5>
               <p className="card-text">Short description of Project 2.</p>
-              <a href="#" className="btn btn-primary">View Project</a>
+              <Link
+                href="#"
+                className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800 "
+              >
+                View Project
+              </Link>
             </div>
           </div>
         </div>
 
         <div className="col-md-4">
           <div className="card mb-4 shadow-sm">
-            <img src="https://via.placeholder.com/150" className="card-img-top" alt="Project 3" />
+            <img
+              src="https://via.placeholder.com/150"
+              className="card-img-top"
+              alt="Project 3"
+            />
             <div className="card-body">
               <h5 className="card-title">Project 3</h5>
               <p className="card-text">Short description of Project 3.</p>
-              <a href="#" className="btn btn-primary">View Project</a>
+              <Link
+                href="#"
+                className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800 "
+              >
+                View Project
+              </Link>
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
