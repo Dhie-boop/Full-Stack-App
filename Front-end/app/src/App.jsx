@@ -1,21 +1,28 @@
-// src/App.jsx
-import './App.css';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './components/login'; // Ensure case matches the file name
-import Home from './components/Home'; // Ensure case matches the file name
-import Navigation from './components/Navigation'; // Ensure case matches the file name
-import Logout from './components/logout'; // Ensure case matches the file name
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import About from './pages/About';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Projects from './pages/Projects';  
+import Dashboard from './pages/Dashboard'; 
 
 function App() {
-  return ( // Added parentheses around the return statement
-    <BrowserRouter>
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/logout" element={<Logout />} />
-      </Routes>
-    </BrowserRouter>
+  return (
+    <Router>
+      <div className='bg-gray-300 w-full h-full'>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route exact path="/dashboard" component={Dashboard} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

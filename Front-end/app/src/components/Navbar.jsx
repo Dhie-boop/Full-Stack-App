@@ -1,26 +1,75 @@
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
+import React from "react";
+import { Link, useLocation } from "react-router-dom";
 
-import React, { useState, useEffect} from 'react';
-export function Navigation() {
-   const [isAuth, setIsAuth] = useState(false);
-   useEffect(() => {
-     if (localStorage.getItem('access_token') !== null) {
-        setIsAuth(true); 
-      }
-    }, [isAuth]);
-     return ( 
-      <div>
-        <Navbar bg="dark" variant="dark">
-          <Navbar.Brand href="/">JWT Authentification</Navbar.Brand>            
-          <Nav className="me-auto"> 
-          {isAuth ? <Nav.Link href="/">Home</Nav.Link> : null}
-          </Nav>
-          <Nav>
-          {isAuth ? <Nav.Link href="/logout">Logout</Nav.Link> :  
-                    <Nav.Link href="/login">Login</Nav.Link>}
-          </Nav>
-        </Navbar>
-       </div>
-     );
-}
+const Navbar = () => {
+  const location = useLocation(); // Hook to get current location
+
+  const isActive = (path) => location.pathname === path; // Helper function to check active route
+
+  return (
+    <nav className="">
+      <div className="py-4 px-5 flex justify-between items-center border shadow-sm">
+        <Link className="text-3xl font-bold no-underline text-gray-700" to="/">
+          ProjectM
+        </Link>
+
+        <div className="">
+          <ul className="flex justify-between items-center gap-5 no-underline font-semibold">
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
+                  isActive("/") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } hover:scale-105 no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/"
+              >
+                Home
+              </Link>
+            </li>
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
+                  isActive("/about") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/about"
+              >
+                About
+              </Link>
+            </li>
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
+                  isActive("/projects") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/projects"
+              >
+                Projects
+              </Link>
+            </li>
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
+                  isActive("/login") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/login"
+              >
+                Login
+              </Link>
+            </li>
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
+                  isActive("/signup") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } no-underline px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/signup"
+              >
+                Sign Up
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

@@ -12,7 +12,7 @@ const Projects = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-5">Published Projects</h2>
+      <h2 className="text-center mb-5 font-bold">Published Projects</h2>
 
       {/* Search Bar */}
       <form className="flex justify-center mb-8" onSubmit={handleSearch}>
