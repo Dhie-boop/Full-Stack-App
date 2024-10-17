@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+ // Use the new instance
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -21,8 +22,8 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/register/", formData); // Adjust the URL if needed
-      navigate("/login"); // Redirect to login page
+      await axiosInstance.post("/register/", formData);
+      navigate("/login");
     } catch (err) {
       setError("An error occurred during registration");
     }
@@ -30,43 +31,6 @@ const Signup = () => {
 
   return (
     <>
-      {/* <div>
-        <h2>Register</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label>Username</label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div>
-            <label>Password</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          {error && <p style={{ color: "red" }}>{error}</p>}
-          <button type="submit">Register</button>
-        </form>
-      </div> */}
 
       <div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="mx-auto max-w-lg text-center">

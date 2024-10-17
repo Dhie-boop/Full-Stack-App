@@ -5,6 +5,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .views import *
 
 from rest_framework.authtoken.views import ObtainAuthToken
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     #This is to display or render the entire list of the project created
     path('projects/', project_list, name='project_list'),
@@ -59,10 +62,12 @@ urlpatterns = [
 
     
     
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
+
     # Other views
     path('register/', views.register, name='register'),
+    path('login/', views.login_view, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('home/', views.HomeView.as_view(), name ='home')
+
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

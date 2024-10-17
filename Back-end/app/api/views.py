@@ -1,28 +1,28 @@
 from django.shortcuts import render
 
 # These are views for the api 
+from rest_framework.authentication import SessionAuthentication
 from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
 from rest_framework.response import Response
-from django.contrib.auth import logout
+from django.contrib.auth import login, logout
 from rest_framework.views import APIView
 from rest_framework import status
-from .models import ProjectInformation, ProjectDetails, ProjectComment, Like, User
-from .serializers import ProjectInformationSerializer, ProjectDetailsSerializer, ProjectCommentSerializer, LikeSerializer
 from rest_framework.permissions import IsAuthenticated
+from .models import ProjectInformation, ProjectDetails, ProjectComment, Like, User
+from .serializers import ProjectInformationSerializer, ProjectDetailsSerializer, ProjectCommentSerializer, LikeSerializer, UserSerializer
 from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer
 from django.contrib.auth.hashers import make_password
 
 
 
 # This is a API view function to create a project
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def project_create(request):
     if request.method == 'POST':
         serializer = ProjectInformationSerializer(data=request.data)
@@ -35,7 +35,9 @@ def project_create(request):
 #This views is to display project information and together the search functionalities and other things 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def project_list(request):
+    permission_classes = [AllowAny]
     projects = ProjectInformation.objects.all()
     project_details = ProjectDetails.objects.all()
 
@@ -76,24 +78,19 @@ def project_list(request):
 # This API view function is to render the details of the particular project 
 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def detailsproject(request, project_id):
     # Get the project or return 404 if not found
     project = get_object_or_404(ProjectInformation, id=project_id)
-    
-    # Get project details related to this project
     project_details = ProjectDetails.objects.filter(project=project)
 
     # Create a list to hold project details and their related comments
     project_details_with_comments = []
-
-    # Loop through each project detail and fetch associated comments
     for detail in project_details:
         comments = detail.comments.all()  # Assuming you have a related comments field
-
         # Serialize the detail and the comments
         detail_serializer = ProjectDetailsSerializer(detail)
         comments_serializer = ProjectCommentSerializer(comments, many=True)
-
         # Append the serialized data to the list
         project_details_with_comments.append({
             'detail': detail_serializer.data,
@@ -113,6 +110,7 @@ def detailsproject(request, project_id):
     
 # This is a API view function of like 
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def like_project(request, project_id):
     # Get the project or return 404 if not found
     project = get_object_or_404(ProjectInformation, id=project_id)
@@ -137,6 +135,7 @@ def like_project(request, project_id):
 
 # This is a API view function of search 
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def project_search(request):
     search_query = request.query_params.get('search', '') 
     category_filter = request.query_params.get('category', '')  
@@ -215,7 +214,7 @@ def project_delete(request, project_id):
 
 # This is a API view function to create a project details
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])  # Ensure user is authenticated
+@permission_classes([AllowAny]) 
 def project_details_create(request):
     serializer = ProjectDetailsSerializer(data=request.data)
     
@@ -253,7 +252,7 @@ def project_details_update(request, project_id):
 
 # This is a API view function to get all the projects of the logged-in user
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])  # Ensure the user is authenticated
+@permission_classes([AllowAny])  
 def user_projects(request):
     # Get all project details associated with the logged-in user
     project_details = ProjectDetails.objects.filter(author=request.user)
@@ -290,7 +289,7 @@ def user_project_details(request, project_id):
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def project_comments(request, project_id):
     # Try to retrieve the project using the project_id from the URL
     project = get_object_or_404(ProjectDetails, id=project_id)
@@ -315,7 +314,7 @@ def project_comments(request, project_id):
 
 
 @api_view(['PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def modify_comment(request, comment_id):
     # Retrieve the specific comment
     comment = get_object_or_404(ProjectComment, id=comment_id)
@@ -345,35 +344,40 @@ def modify_comment(request, comment_id):
 
 
 
-@csrf_exempt
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def register(request):
-    print("Request received")  # Add this to ensure the request is reaching the view
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response({"message": "User created successfully!"}, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['POST'])
+@permission_classes([AllowAny])  
+@authentication_classes([SessionAuthentication])
+def login_view(request):
+    username = request.data.get('username')
+    password = request.data.get('password')
+
+    user = authenticate(request, username=username, password=password)
+    
+    if user is not None:
+        login(request, user)  # This will create the session
+        return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+    else:
+        return Response({"message": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+    
     
 class LogoutView(APIView):
-     permission_classes = (IsAuthenticated,)
-     def post(self, request):
-          
-          try:
-               refresh_token = request.data["refresh_token"]
-               token = refresh_token(refresh_token)
-               token.blacklist()
-               return Response(status=status.HTTP_205_RESET_CONTENT)
-          except Exception as e:
-               return Response(status=status.HTTP_400_BAD_REQUEST)
+    authentication_classes = [SessionAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        logout(request)  # This will terminate the session
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
            
            
 
-class HomeView(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request):
-        content = {'message': "Welcome to the JWT Authentication page using React Js and Django!"}
-        return Response(content)

@@ -2,30 +2,22 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom'; // Updated import
 
+  // Use the new instance
+
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
-  const navigate = useNavigate(); // Updated to useNavigate
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post('http://127.0.0.1:8000/token/', {
+      await axiosInstance.post("/login/", {
         username,
-        password
+        password,
       });
-
-      const { access, refresh } = response.data;
-
-      // Store tokens in localStorage (or any other secure storage)
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
-
-      // Redirect the user to the dashboard (or another protected route)
-      navigate('/dashboard'); // Updated to navigate
+      navigate("/dashboard");  // Redirect to the dashboard after login
     } catch (error) {
       setErrorMessage('Invalid credentials. Please try again.');
     }

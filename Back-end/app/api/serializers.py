@@ -1,4 +1,5 @@
 # serializers.py
+from dataclasses import fields
 from rest_framework import serializers
 from .models import ProjectInformation, ProjectDetails, ProjectComment, Like
 from django.contrib.auth.hashers import make_password
@@ -22,15 +23,21 @@ class ProjectDetailsSerializer(serializers.ModelSerializer):
         return ProjectDetails.objects.create(**validated_data)  # This brings all the fields that belong to ProjectDetails model
 
 class ProjectCommentSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.username', read_only=True)
     class Meta:
         model = ProjectComment
-        fields = ['id', 'project_detail', 'user', 'comment_text', 'created_at']
-        read_only_fields = ['id', 'created_at', 'user']
+        fields = ['id', 'user', 'comment_text', 'created_at']
+    
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = '__all__'  # This brings all the fields that belong to like model
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta: 
+        model = User
+        fields = '__all__'
 
 
 

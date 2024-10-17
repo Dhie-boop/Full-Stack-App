@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Projects from './pages/Projects';  
 import Dashboard from './pages/Dashboard'; 
+import ProjectDetails from './pages/ProjectDetails';
 
 function App() {
   return (
@@ -19,7 +20,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/projects" element={<Projects />} />
-          <Route exact path="/dashboard" component={Dashboard} />
+          <Route exact path="/dashboard" element={<Dashboard />} />
+          <Route path="/projects/:projectId/details" element={<ProjectDetails />} />
         </Routes>
       </div>
     </Router>
