@@ -8,22 +8,27 @@ import Signup from './pages/Signup';
 import Projects from './pages/Projects';  
 import Dashboard from './pages/Dashboard'; 
 import ProjectDetails from './pages/ProjectDetails';
+import Logout from './pages/Logout';
+import { AuthProvider } from './AuthContext/AuthContext';
 
 function App() {
   return (
     <Router>
-      <div className='bg-gray-300 w-full h-full'>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route exact path="/dashboard" element={<Dashboard />} />
-          <Route path="/projects/:projectId/details" element={<ProjectDetails />} />
-        </Routes>
-      </div>
+      <AuthProvider>
+        <div className='bg-gray-300 w-full h-full'>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/logout" element={<Logout />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route exact path="/dashboard" element={<Dashboard />} />
+            <Route path="/projects/:projectId/details" element={<ProjectDetails />} />
+          </Routes>
+        </div>
+      </AuthProvider>
     </Router>
   );
 }
