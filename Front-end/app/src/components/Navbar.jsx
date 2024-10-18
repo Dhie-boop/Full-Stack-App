@@ -31,6 +31,16 @@ const Navbar = () => {
             <li className="hover:scale-105 transition-all duration-300">
               <Link
                 className={`${
+                  isActive("/about") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                to="/about"
+              >
+                About
+              </Link>
+            </li>
+            <li className="hover:scale-105 transition-all duration-300">
+              <Link
+                className={`${
                   isActive("/projects") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
                 } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                 to="/projects"
