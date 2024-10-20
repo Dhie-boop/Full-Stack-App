@@ -4,9 +4,14 @@ import { AuthContext } from "../AuthContext/AuthContext"; // Import AuthContext
 
 const Navbar = () => {
   const location = useLocation(); // Hook to get current location
-  const { isAuthenticated } = useContext(AuthContext); // Get auth state from context
+  const { isAuthenticated, logout } = useContext(AuthContext); // Get auth state and logout function from context
 
   const isActive = (path) => location.pathname === path; // Helper function to check active route
+
+  const handleLogout = () => {
+    logout(); // Call the logout function
+    window.location.href = "/login"; // Redirect to the login page and refresh the page
+  };
 
   return (
     <nav className="bg-white shadow-sm">
@@ -15,43 +20,41 @@ const Navbar = () => {
           ProjectM
         </Link>
 
-        <div className="">
+        <div>
           <ul className="flex justify-between items-center gap-5 no-underline font-semibold">
-            {/* Show links for both authenticated and non-authenticated users */}
-            <li className="hover:scale-105 transition-all duration-300">
-              <Link
-                className={`${
-                  isActive("/") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
-                } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
-                to="/"
-              >
-                Home
-              </Link>
-            </li>
-            <li className="hover:scale-105 transition-all duration-300">
-              <Link
-                className={`${
-                  isActive("/about") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
-                } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
-                to="/about"
-              >
-                About
-              </Link>
-            </li>
-            <li className="hover:scale-105 transition-all duration-300">
-              <Link
-                className={`${
-                  isActive("/projects") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
-                } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
-                to="/projects"
-              >
-                Projects
-              </Link>
-            </li>
-
-            {/* Links for non-authenticated users only */}
-            {!isAuthenticated && (
+            {/* Links for non-authenticated users */}
+            {!isAuthenticated ? (
               <>
+                <li className="hover:scale-105 transition-all duration-300">
+                  <Link
+                    className={`${
+                      isActive("/") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                    } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                    to="/"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li className="hover:scale-105 transition-all duration-300">
+                  <Link
+                    className={`${
+                      isActive("/about") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                    } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                    to="/about"
+                  >
+                    About
+                  </Link>
+                </li>
+                <li className="hover:scale-105 transition-all duration-300">
+                  <Link
+                    className={`${
+                      isActive("/projects") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                    } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                    to="/projects"
+                  >
+                    Projects
+                  </Link>
+                </li>
                 <li className="hover:scale-105 transition-all duration-300">
                   <Link
                     className={`${
@@ -73,10 +76,8 @@ const Navbar = () => {
                   </Link>
                 </li>
               </>
-            )}
-
-            {/* Links for authenticated users only */}
-            {isAuthenticated && (
+            ) : (
+              // Links for authenticated users
               <>
                 <li className="hover:scale-105 transition-all duration-300">
                   <Link
@@ -95,15 +96,15 @@ const Navbar = () => {
                     } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
                     to="/user-projects"
                   >
-                    User Projects
+                    Your Projects
                   </Link>
                 </li>
                 <li className="hover:scale-105 transition-all duration-300">
                   <Link
                     className={`${
-                      isActive("/create-project") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                      isActive("/createproject") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
                     } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
-                    to="/create-project"
+                    to="/createproject"
                   >
                     Create Project
                   </Link>
@@ -111,12 +112,22 @@ const Navbar = () => {
                 <li className="hover:scale-105 transition-all duration-300">
                   <Link
                     className={`${
+                      isActive("/createdetails") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
+                    } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
+                    to="/createdetails"
+                  >
+                    Create Project Details
+                  </Link>
+                </li>
+                <li className="hover:scale-105 transition-all duration-300">
+                  <button
+                    className={`${
                       isActive("/logout") ? "bg-gray-700 text-white" : "text-blue-500 border-2"
                     } px-3 py-2 rounded-full text-gray-700 border-gray-300`}
-                    to="/logout"
+                    onClick={handleLogout}
                   >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </>
             )}

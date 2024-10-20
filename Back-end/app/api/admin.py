@@ -6,7 +6,7 @@ class ProjectInformationAdmin(admin.ModelAdmin):
     search_fields = ('project_title',)
 
 class ProjectDetailsAdmin(admin.ModelAdmin):
-    list_display = ('author', 'project', 'school_category', 'status')
+    list_display = ('user', 'project', 'school_category', 'status')
     search_fields = ('project__project_title', 'author__username')
     list_filter = ('school_category', 'status')
 

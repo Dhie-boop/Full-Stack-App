@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const Projects = () => {
+const UserProject = () => {
   const [projects, setProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("");
@@ -16,8 +16,8 @@ const Projects = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      // Add 'withCredentials' to include session cookies in the request
-      const response = await axios.get("http://localhost:8000/projects/", {
+      // Update to your user projects endpoint
+      const response = await axios.get("http://localhost:8000/user-projects/", {
         params: {
           search: searchTerm,
           category: category,
@@ -25,7 +25,7 @@ const Projects = () => {
         withCredentials: true,  // This will allow sending the session cookie
       });
 
-      setProjects(response.data.projects);
+      setProjects(response.data); // Update to match the structure of your response
     } catch (error) {
       console.error("Error fetching projects:", error);
     } finally {
@@ -39,7 +39,7 @@ const Projects = () => {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-5 font-bold">Published Projects</h2>
+      <h2 className="text-center mb-5 font-bold">Your Projects</h2> {/* Change heading here */}
 
       {/* Search Bar */}
       <form className="flex justify-center mb-8" onSubmit={handleSearch}>
@@ -83,18 +83,20 @@ const Projects = () => {
       {/* Project Cards */}
       <div className="row">
         {!loading && projects.length === 0 && (
-          <p className="text-center">Ooops..... I think the project your looking for might have not been published. Could you please use another key word to search. Thank you my Boss.</p>
+          <p className="text-center">
+            Ooops..... I think you have not have been published. 
+            Could you please use another keyword to search? Thank you, my Boss.
+          </p>
         )}
 
         {!loading && projects.map((project) => (
           <div key={project.id} className="col-md-4">
             <div className="card mb-4 shadow-sm">
-            {console.log(project)}
-            <img
-              src={`http://localhost:8000/project_images/project_images/${project.image}`}  // Adjusted to use correct image path
-              className="img-fluid"
-              alt={project.project_title}
-            /> 
+              <img
+                src={`http://localhost:8000/project_images/${project.image}`}  // Adjust image path as needed
+                className="card-img-top"
+                alt={project.project_title}
+              />
               <div className="card-body">
                 <h5 className="card-title">{project.project_title}</h5>
                 <p className="card-text">{project.short_description}</p>
@@ -107,10 +109,17 @@ const Projects = () => {
                   </div>
                 ))}
                 <Link
-                  to={`/projects/${project.id}/details`}
+                  to={`/user-projects/${project.id}/details`} 
                   className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800"
-                > 
+                >
                   View Project
+                </Link>
+
+                <Link
+                  to={`/user-projects/${project.id}/update`} 
+                  className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800"
+                >
+                  Update Project
                 </Link>
               </div>
             </div>
@@ -121,4 +130,4 @@ const Projects = () => {
   );
 };
 
-export default Projects;
+export default UserProject;

@@ -11,17 +11,20 @@ class ProjectInformationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectInformation
         fields = '__all__'  # This brings all the fields that belong to ProjectInformation model
+    
+    def update(self, instance, validated_data):
+        instance.project_title = validated_data.get('project_title', instance.project_title)
+        instance.short_description = validated_data.get('short_description', instance.short_description)
+        instance.image = validated_data.get('image', instance.image)
+        instance.save()
+        return instance
         
 class ProjectDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectDetails
+        # Exclude 'user' from fields
         fields = ['project', 'school_category', 'status', 'github_link', 'description', 'image_sample', 'benefit']
-        # Exclude author since we handle it in the view
-
-    def create(self, validated_data):
-        # Automatically assign the author in the view function, no need to pass it here
-        return ProjectDetails.objects.create(**validated_data)  # This brings all the fields that belong to ProjectDetails model
-
+        
 class ProjectCommentSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True)
     class Meta:

@@ -24,7 +24,7 @@ class ProjectDetails(models.Model):
         ('Agriculture', 'School of Agriculture & Applied Sciences'),
     ]
 
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(ProjectInformation, on_delete=models.CASCADE)
     school_category = models.CharField(max_length=255, choices=SCHOOL_CHOICES)
     status = models.CharField(max_length=50)

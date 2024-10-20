@@ -7,6 +7,7 @@ from .views import *
 from rest_framework.authtoken.views import ObtainAuthToken
 from django.conf import settings
 from django.conf.urls.static import static
+from .views import get_csrf_token
 
 urlpatterns = [
     #This is to display or render the entire list of the project created
@@ -25,7 +26,7 @@ urlpatterns = [
     path('projects/project_create/', views.project_create, name='project_create'),
     
     #This endpoint API will update a project
-    path('projects/<int:project_id>/project_update', views.project_update, name='project_update'),
+    path('projects/<int:project_id>/project_update/', views.project_update, name='project_update'),
     
     #This endpoint API will delete a project
     path('projects/<int:project_id>/project_delete', views.project_delete, name='project_delete'),
@@ -67,6 +68,9 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    
+    
+    path('get-csrf-token/', get_csrf_token, name='get_csrf_token'),
 
 ]
 if settings.DEBUG:

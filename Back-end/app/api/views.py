@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 # These are views for the api 
+from django.contrib.auth.decorators import login_required
 from rest_framework.authentication import SessionAuthentication
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -17,6 +18,8 @@ from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 from django.contrib.auth import authenticate
 from django.contrib.auth.hashers import make_password
+from django.http import JsonResponse
+from django.middleware.csrf import get_token
 
 
 
@@ -37,7 +40,6 @@ def project_create(request):
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def project_list(request):
-    permission_classes = [AllowAny]
     projects = ProjectInformation.objects.all()
     project_details = ProjectDetails.objects.all()
 
@@ -162,14 +164,14 @@ def project_search(request):
 
 # This is a API view function to update a project
 @api_view(['PUT'])
+@permission_classes([AllowAny])
 def project_update(request, project_id): 
     try:
         project = ProjectInformation.objects.get(pk=project_id) 
     except ProjectInformation.DoesNotExist:
         return Response({'error': 'Project not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-
-    project_serializer = None  # Initialize project_serializer
+    project_serializer = ProjectInformationSerializer(project, data=request.data, partial=True)  # Initialize project_serializer
 
     if request.method == 'PUT':
         project_serializer = ProjectInformationSerializer(project, data=request.data)
@@ -211,19 +213,17 @@ def project_delete(request, project_id):
 
     return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
-
-# This is a API view function to create a project details
 @api_view(['POST'])
-@permission_classes([AllowAny]) 
+@permission_classes([IsAuthenticated])  # Change to IsAuthenticated for user assignment
 def project_details_create(request):
     serializer = ProjectDetailsSerializer(data=request.data)
-    
     if serializer.is_valid():
-        # Save the instance with the authenticated user as the author
-        serializer.save(author=request.user)
-        return Response({'message': 'Project details created successfully'}, status=status.HTTP_201_CREATED)
-    
+        # Save the instance and set the user
+        project_details = serializer.save(user=request.user)  # Set the user from the request
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 # This is a API view function to update a project details
@@ -255,7 +255,7 @@ def project_details_update(request, project_id):
 @permission_classes([AllowAny])  
 def user_projects(request):
     # Get all project details associated with the logged-in user
-    project_details = ProjectDetails.objects.filter(author=request.user)
+    project_details = ProjectDetails.objects.filter(user=request.user)
 
     # Extract the unique projects from the project details
     projects = [detail.project for detail in project_details]
@@ -266,24 +266,35 @@ def user_projects(request):
     return Response(serializer.data, status=status.HTTP_200_OK)  # Return the serialized data
 
 
-# This is a API view function to get the details of a specific project of the logged-in user	
 @api_view(['GET'])
+@permission_classes([AllowAny])
 def user_project_details(request, project_id):
+    # First, get the project using the `project_id`. This skips the direct user check.
     project = get_object_or_404(ProjectInformation, id=project_id)
-    
-    # Get the project details associated with the logged-in user for the specific project
-    project_details = ProjectDetails.objects.filter(project=project, author=request.user)
 
-    # Serialize the project and project details
+    # Get all `ProjectDetails` entries related to this project. Assuming `ProjectDetails` has a `project` field.
+    project_details_queryset = ProjectDetails.objects.filter(project=project).prefetch_related('comments')
+
+    # Serialize the project information
     project_serializer = ProjectInformationSerializer(project)
-    project_details_serializer = ProjectDetailsSerializer(project_details, many=True)
 
+    # Serialize the project details along with comments
+    project_details_data = []
+    for detail in project_details_queryset:
+        detail_serializer = ProjectDetailsSerializer(detail)
+        comments_serializer = ProjectCommentSerializer(detail.comments.all(), many=True)
+        project_details_data.append({
+            'detail': detail_serializer.data,
+            'comments': comments_serializer.data
+        })
+
+    # Prepare the response data
     data = {
         'project': project_serializer.data,
-        'project_details': project_details_serializer.data
+        'project_details_with_comments': project_details_data
     }
-    return Response(data, status=status.HTTP_200_OK) 
 
+    return Response(data, status=status.HTTP_200_OK)
 
 
 
@@ -382,3 +393,7 @@ class LogoutView(APIView):
            
            
 
+
+
+def get_csrf_token(request):
+    return JsonResponse({'csrfToken': get_token(request)})
