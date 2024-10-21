@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Home = () => {
   return (
     <div className="container mt-5 flex items-center flex-col gap-2 h-[100vh]">
-      <span className="text-6xl font-semibold"> Welcome to ProjectM</span>
+      <span className="text-6xl font-semibold"> Welcome to ProjeXplore.</span>
       <span className="text-[28px]">
         Track Your Projects and Share the Journey
       </span>
@@ -27,7 +27,7 @@ const Home = () => {
           ></path>
         </svg>
         <p class=" w-full text-gray-400">
-          ProjectM is the perfect platform for documenting your project
+          ProjeXplore. is the perfect platform for documenting your project
           milestones, sharing detailed insights, and showcasing your hard work.
           Whether it's a creative endeavor or a technical masterpiece, ProjectM
           allows you to store project titles, descriptions, and key updates, all

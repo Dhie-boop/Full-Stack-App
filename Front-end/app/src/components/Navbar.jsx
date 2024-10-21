@@ -17,7 +17,7 @@ const Navbar = () => {
     <nav className="bg-white shadow-sm">
       <div className="py-4 px-5 flex justify-between items-center">
         <Link className="text-3xl font-bold no-underline text-gray-700" to="/">
-          ProjectM
+        ProjeXplore.
         </Link>
 
         <div>
