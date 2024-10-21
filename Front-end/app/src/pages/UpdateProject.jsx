@@ -123,6 +123,7 @@ const UpdateProject = () => {
           <button type="submit" className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800">
             Update Project
           </button>
+          <br /> <br /> <br /> <br />
         </form>
         {error && <p className="text-danger">{error}</p>}
       </div>

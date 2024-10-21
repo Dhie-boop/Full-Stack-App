@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const CreateProject = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [formData, setFormData] = useState({
     project_title: '',
     short_description: '',
@@ -48,6 +50,9 @@ const CreateProject = () => {
       if (response.status === 201) {
         setSuccess('Project created successfully!');
         setError('');
+
+        // Redirect to the createdetails page
+        navigate('/createdetails'); // Use navigate to redirect
       }
     } catch (error) {
       setError('Error creating project. Please try again.');

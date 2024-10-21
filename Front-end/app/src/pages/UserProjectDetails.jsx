@@ -73,61 +73,104 @@ const ProjectDetails = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-5 font-bold">{project.project.project_title}</h2>
-      <img src={`http://localhost:8000${project.project.image}`} className="img-fluid" alt={project.project.project_title} /> 
-      <br /><br />
+      <img
+        src={`http://localhost:8000${project.project.image}`}
+        className="img-fluid rounded-lg shadow-md mb-4"
+        alt={project.project.project_title}
+      />
+  
       {project.project_details_with_comments.map((detailItem, index) => {
         const detail = detailItem.detail;  
         const comments = detailItem.comments;  
-        
+  
         return (
-          <div key={index} className="mt-4">
+          <div key={index} className="mt-4 p-4 border border-gray-300 rounded-lg shadow-md">
             <p><strong>School:</strong> {detail.school_category}</p>
             <p><strong>Status:</strong> {detail.status}</p>
-            <p><strong>Github:</strong> <a href={detail.github_link}>{detail.github_link}</a></p>
+            <p><strong>Github:</strong> <a href={detail.github_link} className="text-blue-500 hover:underline">{detail.github_link}</a></p>
             <p><strong>Description:</strong> {detail.description}</p>
             <p><strong>Benefit:</strong> {detail.benefit}</p>
-            <br /><br />
-            
-            <h4>Comments:</h4>
+  
+            <h4 className="mt-4 font-semibold">Comments:</h4>
             {comments.length > 0 ? (
               comments.map((comment, commentIndex) => (
-                <div key={commentIndex}>
+                <div key={commentIndex} className="border-b border-gray-200 py-2">
                   {editComment === comment.id ? (
-                    <div>
-                      <textarea value={updatedComment} onChange={(e) => setUpdatedComment(e.target.value)} />
-                      <button onClick={() => handleUpdateSubmit(comment.id, detail.id)}>Update Comment</button>
-                      <button onClick={() => setEditComment(null)}>Cancel</button>
+                    <div className="flex flex-col space-y-2">
+                      <textarea
+                        value={updatedComment}
+                        onChange={(e) => setUpdatedComment(e.target.value)}
+                        className="p-2 border border-gray-300 rounded-md"
+                        placeholder="Update your comment..."
+                      />
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleUpdateSubmit(comment.id, detail.id)}
+                          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                        >
+                          Update Comment
+                        </button>
+                        <button
+                          onClick={() => setEditComment(null)}
+                          className="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   ) : (
-                    <p>
-                      <strong>{comment.user.username}:</strong> <br />
-                      {comment.comment_text} <br />
-                      {comment.created_at}
-                    </p>
-                  )}
-
-                  {comment.user.id === currentUser.id && (
-                    <div>
-                      <button onClick={() => setEditComment(comment.id)}>Edit</button>
-                      <button onClick={() => handleDeleteComment(comment.id, detail.id)}>Delete</button>
+                    <div className="py-2">
+                      <p className="font-semibold">
+                        {comment.user.username}:
+                      </p>
+                      <p className="ml-4">{comment.comment_text}</p>
+                      <p className="text-gray-500 text-sm">{comment.created_at}</p>
+  
+                      {comment.user.id === currentUser.id && (
+                        <div className="flex space-x-2 mt-2">
+                          <button
+                            onClick={() => setEditComment(comment.id)}
+                            className="bg-yellow-500 text-white px-4 py-1 rounded-md hover:bg-yellow-600"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteComment(comment.id, detail.id)}
+                            className="bg-red-500 text-white px-4 py-1 rounded-md hover:bg-red-600"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               ))
             ) : (
-              <p>No comments yet.</p>
+              <p className="text-gray-500">No comments yet.</p>
             )}
-            
-            <form onSubmit={(e) => handleCommentSubmit(e, detail.id)}>
-              <textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Add a comment..." required />
-              <button type="submit">Submit Comment</button>
+  
+            <form onSubmit={(e) => handleCommentSubmit(e, detail.id)} className="mt-4">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                required
+                className="p-2 border border-gray-300 rounded-md w-full"
+              />
+              <button
+                type="submit"
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+              >
+                Submit Comment
+              </button>
             </form>
-            <br />
           </div>
         );
       })}
     </div>
   );
+  
 };
 
 export default ProjectDetails;

@@ -63,10 +63,10 @@ const UserProject = () => {
   
 
 
-  return (
+  return ( 
     <div className="container mt-5">
-      <h2 className="text-center mb-5 font-bold">Your Projects</h2> {/* Change heading here */}
-
+      <h2 className="text-center mb-5 font-bold">Your Projects</h2>
+  
       {/* Search Bar */}
       <form className="flex justify-center mb-8" onSubmit={handleSearch}>
         <div className="flex space-x-4">
@@ -85,7 +85,7 @@ const UserProject = () => {
             <option value="Theology & Religious Studies">School of Theology & Religious Studies</option>
             <option value="Agriculture">School of Agriculture & Applied Sciences</option>
           </select>
-
+  
           <input
             type="text"
             className="p-2 border border-gray-300 rounded-md"
@@ -93,7 +93,7 @@ const UserProject = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-
+  
           <button
             type="submit"
             className="bg-gray-700 text-white p-2 rounded-md hover:bg-gray-800"
@@ -102,22 +102,22 @@ const UserProject = () => {
           </button>
         </div>
       </form>
-
+  
       {/* Loading Indicator */}
       {loading && <p>Loading projects...</p>}
-
+  
       {/* Project Cards */}
       <div className="row">
         {!loading && projects.length === 0 && (
           <p className="text-center">
-            Ooops..... I think you have not have been published. 
+            Ooops..... I think you have not published any projects. 
             Could you please use another keyword to search? Thank you, my Boss.
           </p>
         )}
-
+  
         {!loading && projects.map((project) => (
           <div key={project.id} className="col-md-4">
-            <div className="card mb-4 shadow-sm">
+            <div className="card mb-4 shadow-sm" style={{ minHeight: '400px' }}> {/* Adjust height */}
               <img
                 src={`http://localhost:8000/project_images/${project.image}`}  // Adjust image path as needed
                 className="card-img-top"
@@ -134,24 +134,30 @@ const UserProject = () => {
                     <p><strong>Description:</strong> {detail.description}</p>
                   </div>
                 ))}
-                <Link
-                  to={`/user-projects/${project.id}/details`} 
-                  className="bg-gray-500 no-underline text-white p-2 rounded-md hover:bg-gray-800"
-                >
-                  View Project
-                </Link>
-
-                <Link
-                  to={`/user-projects/${project.id}/update`} 
-                  className="bg-gray-500 no-underline text-white p-2 rounded-md hover:bg-gray-800"
-                >
-                  Update Project
-                </Link> <br></br>
-                <button
+  
+                {/* Button Container */}
+                <div className="flex space-x-3 mt-4"> {/* Adjust spacing */}
+                  <Link
+                    to={`/user-projects/${project.id}/details`} 
+                    className="bg-gray-500 no-underline text-white p-1 text-sm rounded-md hover:bg-gray-800" // Reduced padding and font size
+                  >
+                    View Project
+                  </Link>
+  
+                  <Link
+                    to={`/user-projects/${project.id}/update`} 
+                    className="bg-gray-500 no-underline text-white p-1 text-sm rounded-md hover:bg-gray-800" // Reduced padding and font size
+                  >
+                    Update Project
+                  </Link>
+  
+                  <button
                     onClick={() => handleDelete(project.id)}
-                    className="bg-red-400 text-white p-2 rounded-md hover:bg-red-700 ml-2">
+                    className="bg-red-400 text-white p-1 text-sm rounded-md hover:bg-red-700" // Reduced padding and font size
+                  >
                     Delete Project
-                </button>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -159,6 +165,9 @@ const UserProject = () => {
       </div>
     </div>
   );
+  
+  
+  
 };
 
 export default UserProject;
