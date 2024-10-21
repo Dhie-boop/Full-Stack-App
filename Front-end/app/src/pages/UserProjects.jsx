@@ -37,6 +37,32 @@ const UserProject = () => {
     fetchProjects(); // Fetch projects on initial load
   }, []);
 
+  const handleDelete = async (projectId) => {
+    console.log(`Attempting to delete project with ID: ${projectId}`); // Debugging statement
+  
+    const confirmDelete = window.confirm("Are you sure you want to delete this project?");
+    if (confirmDelete) {
+      try {
+        const response = await axios.delete(`http://localhost:8000/projects/${projectId}/project_delete/`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // Debugging token
+          },
+        });
+  
+        console.log('Delete response:', response); // Log the entire response
+        alert(response.data.message); // Show success message
+  
+        // Refresh the projects list after deletion
+        fetchProjects();
+      } catch (error) {
+        console.error('Error deleting project:', error.response ? error.response.data : error.message); // Detailed error logging
+        alert('Failed to delete the project. Please try again.');
+      }
+    }
+  };
+  
+
+
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-5 font-bold">Your Projects</h2> {/* Change heading here */}
@@ -110,17 +136,22 @@ const UserProject = () => {
                 ))}
                 <Link
                   to={`/user-projects/${project.id}/details`} 
-                  className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800"
+                  className="bg-gray-500 no-underline text-white p-2 rounded-md hover:bg-gray-800"
                 >
                   View Project
                 </Link>
 
                 <Link
                   to={`/user-projects/${project.id}/update`} 
-                  className="bg-gray-700 no-underline text-white p-2 rounded-md hover:bg-gray-800"
+                  className="bg-gray-500 no-underline text-white p-2 rounded-md hover:bg-gray-800"
                 >
                   Update Project
-                </Link>
+                </Link> <br></br>
+                <button
+                    onClick={() => handleDelete(project.id)}
+                    className="bg-red-400 text-white p-2 rounded-md hover:bg-red-700 ml-2">
+                    Delete Project
+                </button>
               </div>
             </div>
           </div>

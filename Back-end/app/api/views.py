@@ -196,6 +196,7 @@ def project_update(request, project_id):
     
 # This is a API view function to delete a project
 @api_view(['DELETE'])
+@permission_classes([AllowAny])
 def project_delete(request, project_id):
     # Get the ProjectInformation object
     project = get_object_or_404(ProjectInformation, id=project_id)
@@ -213,6 +214,7 @@ def project_delete(request, project_id):
 
     return Response({'error': 'Method not allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
+
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])  # Change to IsAuthenticated for user assignment
 def project_details_create(request):
@@ -221,7 +223,11 @@ def project_details_create(request):
         # Save the instance and set the user
         project_details = serializer.save(user=request.user)  # Set the user from the request
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    # Log the serializer errors to see what validation failed
+    print(serializer.errors)  # Add this line to log errors
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 

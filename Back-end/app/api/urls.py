@@ -29,7 +29,7 @@ urlpatterns = [
     path('projects/<int:project_id>/project_update/', views.project_update, name='project_update'),
     
     #This endpoint API will delete a project
-    path('projects/<int:project_id>/project_delete', views.project_delete, name='project_delete'),
+    path('projects/<int:project_id>/project_delete/', views.project_delete, name='project_delete'),
     
     #This endpoint API will create a new project details
     path('project_details_create/', views.project_details_create, name='project_details_create'),

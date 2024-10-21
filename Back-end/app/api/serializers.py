@@ -20,11 +20,28 @@ class ProjectInformationSerializer(serializers.ModelSerializer):
         return instance
         
 class ProjectDetailsSerializer(serializers.ModelSerializer):
+    project = serializers.CharField()  # Accept project name as a string
+
     class Meta:
         model = ProjectDetails
-        # Exclude 'user' from fields
         fields = ['project', 'school_category', 'status', 'github_link', 'description', 'image_sample', 'benefit']
-        
+
+    def validate_project(self, value):
+        # Check if the project title exists in the ProjectInformation model
+        try:
+            project = ProjectInformation.objects.get(project_title=value)
+        except ProjectInformation.DoesNotExist:
+            raise serializers.ValidationError("Project with this title does not exist.")
+        return project
+
+    def create(self, validated_data):
+        # Get the project title and replace it with the actual project object
+        project = validated_data.pop('project')
+        project_instance = ProjectInformation.objects.get(project_title=project)
+        project_details = ProjectDetails.objects.create(project=project_instance, **validated_data)
+        return project_details
+
+
 class ProjectCommentSerializer(serializers.ModelSerializer):
     user = serializers.CharField(source='user.username', read_only=True)
     class Meta:
