@@ -194,11 +194,6 @@ Add pre-commit hooks for formatting / linting to keep code consistent.
 
 ---
 
-## License
-
-Add a license file (e.g., MIT) in the repository root. If you already have a license, update the section above with the license name.
-
----
 
 ---
 
